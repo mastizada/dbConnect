@@ -22,3 +22,5 @@ cur = con.cursor()
 
 dbConnect.disconnect(con)
 ```
+
+[![Analytics](https://ga-beacon.appspot.com/UA-36541010-2/dbConnect/Readme)](http://www.mastizada.com)
