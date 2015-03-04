@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __name__ = "dbConnect"
-__description__ = 'Database Connection Module'
-__autor__ = "Emin Mastizada"
-__version__ =  '2014-10-20'
+__description__ = 'Light Database Connection Module for Python'
+__autor__ = "Emin Mastizada <come@debugwith.me>"
+__version__ =  '0.2'
 
 import mysql.connector	# MySQL Connector
 from mysql.connector import errorcode
@@ -21,6 +21,7 @@ def connect():
 	Creates connection to database, returns Connection or boolean False
 	"""
 	if not check_settings():
+		print("Some keys are absent in credentials.yml")
 		return False
 	try:
 		con = mysql.connector.connect(
