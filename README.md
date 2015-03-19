@@ -3,17 +3,22 @@ MySQL Database Connection Module: dbConnect
 
 **INSTALL**:
 
-* Clone repository to your project folder.
+* Clone repository to your project folder:
+
+    ``git submodule add https://github.com/EmiXLabs/dbConnect.git``
 * Go to dbConnect folder
+
+    ``cd dbConnect``
 * Install requirements:
-- Python 3
-```
-sudo pip3 install -r requirements.txt --allow-external mysql-connector-python
-```
-- Python 2:
-```
-sudo pip install -r requirements.txt --allow-external mysql-connector-python
-```
+  - Python 3
+    ```
+    sudo pip3 install -r requirements.txt --allow-external mysql-connector-python
+    ```
+  - Python 2:
+    ```
+    sudo pip install -r requirements.txt --allow-external mysql-connector-python
+    ```
+* Create credentials.yml in your project, example of file is in dbConnect folder.
 
 **USAGE**:
 ```
