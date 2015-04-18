@@ -111,3 +111,56 @@ def insert_dict(data, table, con=connection, cur=current):
             e = str(e)
         return {'status': False, 'message': e}
     return {'status': True, 'message': "Object added to database"}
+
+
+def update_dict(data, where, table, con=connection, cur=current):
+    """
+    Update database using information in dictionary
+    :type data: dict
+    :param data: Object with keys as column name in database
+    :type where: dict
+    :param where: Objects with keys as column name for where statement
+    :type table: str
+    :param table: Table name
+    :param con: Connection, no need
+    :param cur: Current, no need
+    :return: dict with Boolean status key and message
+    """
+    if not con:
+        return {'status': False, 'message': "Connection is not defined"}
+    if not cur:
+        return {'status': False, 'message': "Current is not defined"}
+    if not len(data):
+        return {'status': False, 'message': "Object is empty"}
+    # Make datetime and date objects string:
+    try:
+        for key in data:
+            if isinstance(data[key], datetime):
+                data[key] = str(data[key].isoformat())
+        # Build query:
+        query = "UPDATE FROM %s SET " % table
+        query_w = " WHERE "
+        for key in data:
+            query += key + ' = '
+            if isinstance(data[key], str):
+                query += "'{" + key + "}', "
+            else:
+                query += "{" + key + "}, "
+        for key in where:
+            query_w += key + ' = '
+            if isinstance(data[key], str):
+                query_w += "'{" + key + "}', "
+            else:
+                query_w += "{" + key + "}, "
+        query = query.rstrip(", ")
+        query_w = query_w.rstrip(", ")
+        query = query.format(**data)
+        query_w = query_w.format(**where)
+        # Format, execute and send to database:
+        cur.execute(query + query_w)
+        con.commit()
+    except Exception as e:
+        if not isinstance(e, str):
+            e = str(e)
+        return {'status': False, 'message': e}
+    return {'status': True, 'message': "Object added to database"}

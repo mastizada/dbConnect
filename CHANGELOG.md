@@ -15,3 +15,4 @@
 * PEP8 standards
 * Inserting dictionary object with keys as column name to database
 * Optimized for pydoc
+* Added method to update table
