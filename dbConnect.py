@@ -107,5 +107,7 @@ def insert_dict(data, table, con=connection, cur=current):
         cur.execute(query.format(**data))
         con.commit()
     except Exception as e:
+        if not isinstance(e, str):
+            e = str(e)
         return {'status': False, 'message': e}
     return {'status': True, 'message': "Object added to database"}
