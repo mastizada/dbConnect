@@ -11,7 +11,6 @@ import yaml
 from datetime import datetime
 
 settings = yaml.load(open("credentials.yml", 'r'))
-### Settings file can be checked for keys:
 connection = None
 current = None
 
