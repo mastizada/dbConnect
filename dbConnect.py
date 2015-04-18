@@ -138,7 +138,7 @@ def update_dict(data, where, table, con=connection, cur=current):
             if isinstance(data[key], datetime):
                 data[key] = str(data[key].isoformat())
         # Build query:
-        query = "UPDATE FROM %s SET " % table
+        query = "UPDATE %s SET " % table
         query_w = " WHERE "
         for key in data:
             query += key + ' = '
