@@ -20,7 +20,7 @@ MySQL Database Connection Module: dbConnect
     ```
 * Create credentials.yml in your project, example of file is in dbConnect folder.
 
-**USAGE**:
+**USAGE Example**:
 ```
 from dbConnect import dbConnect
 # Make connection:
@@ -33,5 +33,10 @@ cur.execute("select * from listings order by id desc limit 5")
 
 dbConnect.disconnect(con)
 ```
+
+**DOCUMENTATION**:
+
+* Currently there is no documentation (coming soon staff)
+* Check generated documentation using ``pydoc3 dbConnect`` or ``pydoc3 -p 1994`` and open localhost:1994/ in browser
 
 [![Analytics](https://ga-beacon.appspot.com/UA-36541010-2/dbConnect/Readme)](http://www.mastizada.com)

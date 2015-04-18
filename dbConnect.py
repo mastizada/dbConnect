@@ -1,21 +1,28 @@
+"""
+Light Database Connection Module for Python
+"""
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __name__ = "dbConnect"
 __description__ = 'Light Database Connection Module for Python'
-__autor__ = "Emin Mastizada <come@debugwith.me>"
+__author__ = "Emin Mastizada <come@debugwith.me>"
 __version__ = '0.3'
+__license__ = "MPL 2.0"
+__credits__ = ""
 
 import mysql.connector  # MySQL Connector
 from mysql.connector import errorcode
 import yaml
 from datetime import datetime
 
-settings = yaml.load(open("credentials.yml", 'r'))
+credentials_file = open("credentials.yml", 'r')
+settings = yaml.load(credentials_file)
+credentials_file.close()
 connection = None
 current = None
 
 
-def check_settings():
+def _check_settings():
     """
     Check configuration file
     :return: True if all settings are correct
@@ -31,7 +38,7 @@ def connect():
     Creates connection to database, returns Connection or boolean False
     :return: Mysql Connection
     """
-    if not check_settings():
+    if not _check_settings():
         print("Some keys are absent in credentials.yml")
         return False
     try:
@@ -55,6 +62,7 @@ def connect():
 def disconnect(con):
     """
     Disconnect from database
+    :param con: Database connection to be closed
     """
     con.close()
 
