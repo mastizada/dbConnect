@@ -148,7 +148,7 @@ def update_dict(data, where, table, con=connection, cur=current):
                 query += "{" + key + "}, "
         for key in where:
             query_w += key + ' = '
-            if isinstance(data[key], str):
+            if isinstance(where[key], str):
                 query_w += "'{" + key + "}', "
             else:
                 query_w += "{" + key + "}, "
