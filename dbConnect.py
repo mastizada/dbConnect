@@ -68,7 +68,7 @@ def insert_dict(data, table, con=connection, cur=current):
     :param table: Table name
     :param con: Connection, no need
     :param cur: Current, no need
-    :return: Boolean status
+    :return: dict with Boolean status key and message
     """
     if not con:
         return {'status': False, 'message': "Connection is not defined"}
