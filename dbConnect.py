@@ -87,22 +87,25 @@ def insert_dict(data, table, con=connection, cur=current):
     if not len(data):
         return {'status': False, 'message': "Object is empty"}
     # Make datetime and date objects string:
-    for key in data:
-        if isinstance(data[key], datetime):
-            data[key] = str(data[key].isoformat())
-    # Build query:
-    query = "INSERT INTO %s (" % table
-    query_v = "VALUES ("
-    for key in data:
-        query += key + ','
-        if isinstance(data[key], str):
-            query_v += "'{" + key + "}',"
-        else:
-            query_v += "{" + key + "},"
-    query = query.rstrip(",")
-    query_v = query_v.rstrip(",")
-    query = query + ") " + query_v + ") "
-    # Format, execute and send to database:
-    cur.execute(query.format(**data))
-    con.commit()
+    try:
+        for key in data:
+            if isinstance(data[key], datetime):
+                data[key] = str(data[key].isoformat())
+        # Build query:
+        query = "INSERT INTO %s (" % table
+        query_v = "VALUES ("
+        for key in data:
+            query += key + ','
+            if isinstance(data[key], str):
+                query_v += "'{" + key + "}',"
+            else:
+                query_v += "{" + key + "},"
+        query = query.rstrip(",")
+        query_v = query_v.rstrip(",")
+        query = query + ") " + query_v + ") "
+        # Format, execute and send to database:
+        cur.execute(query.format(**data))
+        con.commit()
+    except Exception as e:
+        return {'status': False, 'message': e}
     return {'status': True, 'message': "Object added to database"}
