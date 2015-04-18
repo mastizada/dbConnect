@@ -9,3 +9,8 @@
 * Usage updated
 * Error reporting when credentials file is broken
 * .gitignore added to solve cache problem
+
+** v 0.3 **:
+
+* PEP8 standards
+* Inserting dictionary object with keys as column name to database
