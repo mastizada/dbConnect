@@ -56,7 +56,9 @@ def connect():
         else:
             print(err)  # Change this code, it can be logged or just printed.
         return False
-    return con
+    connection = con
+    current = con.cursor()
+    return con, current
 
 
 def disconnect(con):

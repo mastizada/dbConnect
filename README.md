@@ -24,9 +24,7 @@ MySQL Database Connection Module: dbConnect
 ```
 from dbConnect import dbConnect
 # Make connection:
-con = dbConnect.connect()
-# Make cursor on connection:
-cur = con.cursor()
+con, cur = dbConnect.connect()
 
 # Some code
 cur.execute("select * from listings order by id desc limit 5")
