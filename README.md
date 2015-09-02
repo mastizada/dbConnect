@@ -25,6 +25,7 @@ Light MySQL Database Module
 
 ## DOCUMENTATION:
 * Docs: http://dbconnect.readthedocs.org/
+* Another Docs: https://pythonhosted.org/dbConnect/
 * Check generated documentation using ``pydoc3 dbConnect`` or ``pydoc3 -p 1994`` and open localhost:1994/ in browser
 
 ### Enjoy
