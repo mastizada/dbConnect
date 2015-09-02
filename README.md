@@ -7,22 +7,19 @@ Light MySQL Database operations module
 
 ## INSTALLING FROM SOURCE:
 * Clone from repository:
-
   - ``git clone git@github.com:EmiXLabs/dbConnect.git``
 * Go to dbConnect folder
   - ``cd dbConnect``
 * Install requirements:
   - ```sudo pip install -r requirements.txt --allow-external mysql-connector-python```
-
 * Install package:
   - ``sudo python setup.py install``
 
 ##USAGE:
 * Import and make connection:
-
-    ``from dbConnect import DBConnect``
-    ``database = DBConnect(credentials.json file)``
-    ``database.fetch('tableName', limit=5, filters={'company': 'pyninjas'})``
+    - ``from dbConnect import DBConnect``
+    - ``database = DBConnect(credentials.json file)``
+    - ``database.fetch('tableName', limit=5, filters={'company': 'pyninjas'})``
 
 ## DOCUMENTATION:
 * Read the docs will be here
