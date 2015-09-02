@@ -1,2 +1,2 @@
-pyyaml
+--allow-all-external
 mysql-connector-python
