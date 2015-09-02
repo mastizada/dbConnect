@@ -22,7 +22,7 @@ Light MySQL Database Module
     - ``database.fetch('tableName', limit=5, filters={'company': 'pyninjas'})``
 
 ## DOCUMENTATION:
-* Read the docs will be here
+* Docs: http://dbconnect.readthedocs.org/
 * Check generated documentation using ``pydoc3 dbConnect`` or ``pydoc3 -p 1994`` and open localhost:1994/ in browser
 
 ### Enjoy
