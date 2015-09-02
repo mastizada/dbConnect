@@ -15,7 +15,6 @@
 import sys
 import os
 import shlex
-import dbConnect
 from dbConnect import __version__
 
 sys.path.insert(0, os.path.abspath('../dbConnect'))
