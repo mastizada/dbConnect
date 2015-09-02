@@ -2,6 +2,8 @@
 ===
 Light MySQL Database Module
 
+[![Documentation Status](https://readthedocs.org/projects/dbconnect/badge/?version=latest)](https://readthedocs.org/projects/dbconnect/?badge=latest)
+
 ## INSTALL:
 * ``pip install dbConnect``
 

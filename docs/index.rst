@@ -8,6 +8,8 @@ dbConnect: Light MySQL Database Module
 
 Release v\ |version|. (:ref:`Installation <install>`)
 
+.. image:: https://readthedocs.org/projects/dbconnect/badge/?version=latest
+
 dbConnect is an :ref:`MPLv2 Licensed<mpl2>` Module for **little projects**
 using *mysql* database. It generates mysql queries automatically,
 you just send data in pythonic style and it does the rest.
