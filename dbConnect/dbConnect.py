@@ -2,11 +2,11 @@ from __future__ import unicode_literals
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Light Database Connection Module for Python
+Light MySQL Database Module
 """
 __name__ = "dbConnect"
-__description__ = 'Light Database Connection Module for Python'
-__author__ = "Emin Mastizada <come@debugwith.me>"
+__description__ = 'Light MySQL Database Module'
+__author__ = "Emin Mastizada <emin@linux.com>"
 __version__ = '1.0'
 __license__ = "MPL 2.0"
 
@@ -32,6 +32,7 @@ class DBConnect():
     def connect(self):
         """
         Creates connection to database, sets connection and cursor
+        Connection to database can be loosed, if that happens you can use this function to reconnect to database
         """
         try:
             self.connection = mysql.connector.connect(
@@ -142,13 +143,13 @@ class DBConnect():
             return {'status': False, 'message': e}
         return {'status': True, 'message': "Object added to database"}
 
-    def update(self, data, where, table, case='AND'):
+    def update(self, data, filters, table, case='AND'):
         """
         Update database using information in dictionary
         :type data: dict
         :param data: Object with keys as column name in database
-        :type where: dict
-        :param where: Objects with keys as column name for where statement
+        :type filters: dict
+        :param filters: Objects with keys as column name for filters statement
         :type table: str
         :param table: Table name
         :return: dict with Boolean status key and message
@@ -167,12 +168,12 @@ class DBConnect():
                 query_update += key + ' = %(' + key + ')s, '
             query_update = query_update.rstrip(', ') + ' '  # remove last comma and add empty space
             query_update += 'WHERE '
-            for key in where:
+            for key in filters:
                 query_update += key + ' = %(where_' + key + ')s ' + case + ' '
             query_update = query_update.rstrip(case + ' ')
-            # merge where and data:
-            for key in where:
-                data['where_' + key] = where[key]
+            # merge filters and data:
+            for key in filters:
+                data['where_' + key] = filters[key]
             # execute and send to database:
             self.cursor.execute(query_update, data)
             self.connection.commit()
@@ -197,3 +198,6 @@ class DBConnect():
         query = query.rstrip(case + ' ')
         self.cursor.execute(query, filters)
         self.connection.commit()
+
+if __name__ == '__main__':
+    pass

@@ -3,7 +3,7 @@ from setuptools import setup
 setup(name='dbConnect',
       version='1.0',
       description='Simple tool for MySQL database operations',
-      keywords='dbConnect mysql simple easy connection operations',
+      keywords='dbConnect mysql simple easy, light connection module',
       url='https://github.com/EmiXLabs/dbConnect',
       author='Emin Mastizada',
       author_email='emin@linux.com',

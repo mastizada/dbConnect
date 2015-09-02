@@ -1,6 +1,6 @@
 #dbConnect
 ===
-Light MySQL Database operations module
+Light MySQL Database Module
 
 ## INSTALL:
 * ``pip install dbConnect``
