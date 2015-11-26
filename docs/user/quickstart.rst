@@ -80,6 +80,7 @@ Fields:
 	- filters: ``dict`` : filters to find row(s) that will be changed, must be provided
 	- table: ``str`` : name of table, must be provided
 	- case: ``str`` : search case for filter [AND, OR], default ``'AND'``
+	- commit: ``bool`` : commit after insert command, default: True
 
 Example:
 
@@ -95,6 +96,7 @@ Fields:
 	- table: ``str`` : name of table, must be provided
 	- filters: ``dict`` : filters to find row(s) that will be deleted, must be provided
 	- case: ``str`` : search case for filter [AND, OR], default ``'AND'``
+	- commit: ``bool`` : commit after insert command, default: True
 
 Example:
 

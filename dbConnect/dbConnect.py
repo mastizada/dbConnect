@@ -145,7 +145,7 @@ class DBConnect():
             return {'status': False, 'message': e}
         return {'status': True, 'message': "Object added to database"}
 
-    def update(self, data, filters, table, case='AND'):
+    def update(self, data, filters, table, case='AND', commit=True):
         """
         Update database using information in dictionary
         :type data: dict
@@ -178,14 +178,15 @@ class DBConnect():
                 data['where_' + key] = filters[key]
             # execute and send to database:
             self.cursor.execute(query_update, data)
-            self.connection.commit()
+            if commit:
+                self.connection.commit()
         except Exception as e:
             if not isinstance(e, str):
                 e = str(e)
             return {'status': False, 'message': e}
         return {'status': True, 'message': "Object added to database"}
 
-    def delete(self, table, filters=None, case='AND'):
+    def delete(self, table, filters=None, case='AND', commit=True):
         """
         Delete item from table
         :param table: name of table
@@ -199,7 +200,8 @@ class DBConnect():
             query += key + ' = %(' + key + ')s ' + case + ' '
         query = query.rstrip(case + ' ')
         self.cursor.execute(query, filters)
-        self.connection.commit()
+        if commit:
+            self.connection.commit()
 
     def commit(self):
         """
