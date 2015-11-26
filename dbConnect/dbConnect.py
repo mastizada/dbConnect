@@ -2,10 +2,10 @@ from __future__ import unicode_literals
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Light MySQL Database Module
+MySQL for Humans
 """
 __name__ = "dbConnect"
-__description__ = 'Light MySQL Database Module'
+__description__ = 'MySQL for Humans'
 __author__ = "Emin Mastizada <emin@linux.com>"
 __version__ = '1.0'
 __license__ = "MPL 2.0"
@@ -109,13 +109,14 @@ class DBConnect():
             results.append(data)
         return results
 
-    def insert(self, data, table):
+    def insert(self, data, table, commit=True):
         """
         Insert dictionary object to database
         :type data: dict
         :param data: Object with keys as column name in database
         :type table: str
         :param table: Table name
+        :param commit: Commit after every insert
         :return: dict with Boolean status key and message
         """
         if not self.connection:
@@ -136,7 +137,8 @@ class DBConnect():
             query = query_insert + query_value
             # Format, execute and send to database:
             self.cursor.execute(query, data)
-            self.connection.commit()
+            if commit:
+                self.connection.commit()
         except Exception as e:
             if not isinstance(e, str):
                 e = str(e)
@@ -197,6 +199,12 @@ class DBConnect():
             query += key + ' = %(' + key + ')s ' + case + ' '
         query = query.rstrip(case + ' ')
         self.cursor.execute(query, filters)
+        self.connection.commit()
+
+    def commit(self):
+        """
+        Commit collected data for making changes to database
+        """
         self.connection.commit()
 
 if __name__ == '__main__':

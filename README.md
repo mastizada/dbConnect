@@ -1,6 +1,6 @@
 #dbConnect
 ===
-Light MySQL Database Module
+MySQL for Humans
 
 [![Documentation Status](https://readthedocs.org/projects/dbconnect/badge/?version=latest)](https://readthedocs.org/projects/dbconnect/?badge=latest)
 
@@ -9,7 +9,7 @@ Light MySQL Database Module
 
 ## INSTALLING FROM SOURCE:
 * Clone from repository:
-  - ``git clone git@github.com:EmiXLabs/dbConnect.git``
+  - ``git clone git@github.com:mastizada/dbConnect.git``
 * Go to dbConnect folder
   - ``cd dbConnect``
 * Install requirements:

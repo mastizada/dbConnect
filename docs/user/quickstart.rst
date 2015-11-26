@@ -62,6 +62,7 @@ Add new row (data) to table.
 Fields:
 	- data: ``dict`` : dictionary with keys as column name, must be provided
 	- table: ``str`` : name of table, must be provided
+	- commit: ``bool`` : commit after insert command, default: True
 
 Example:
 
@@ -98,6 +99,18 @@ Fields:
 Example:
 
 	>>> database.delete('user', {'id': 1, 'name': 'Emin Mastizada'}, case='OR')
+
+
+Commit Data
+-----------
+
+Commit changes to database.
+
+No fields.
+
+Example:
+
+	>>> database.commit()
 
 
 And now enjoy and give me your feedbacks ;)

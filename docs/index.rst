@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-dbConnect: Light MySQL Database Module
+dbConnect: MySQL for Humans
 ======================================
 
 Release v\ |version|. (:ref:`Installation <install>`)
@@ -43,4 +43,3 @@ User Guide
    user/intro
    user/install
    user/quickstart
-

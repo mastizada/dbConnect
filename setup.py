@@ -1,10 +1,10 @@
 from setuptools import setup
 
 setup(name='dbConnect',
-      version='1.1',
-      description='Light MySQL Database Module',
+      version='1.2',
+      description='MySQL for Humans',
       keywords='dbConnect mysql simple easy, light connection module',
-      url='https://github.com/EmiXLabs/dbConnect',
+      url='https://github.com/mastizada/dbConnect',
       author='Emin Mastizada',
       author_email='emin@linux.com',
       license='MPLv2',

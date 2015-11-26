@@ -25,11 +25,11 @@ Get the Code
 ------------
 
 dbConnect is actively developed on GitHub, where the code is
-`always available <https://github.com/EmiXLabs/dbConnect>`_.
+`always available <https://github.com/mastizada/dbConnect>`_.
 
 You can either clone the public repository::
 
-    $ git clone git@github.com:EmiXLabs/dbConnect.git
+    $ git clone git@github.com:mastizada/dbConnect.git
 
 Once you have a copy of the source, you can embed it in your Python package,
 or install it into your site-packages easily::
