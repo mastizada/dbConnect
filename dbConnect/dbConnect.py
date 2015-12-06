@@ -1,6 +1,6 @@
-from __future__ import unicode_literals
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 """
 MySQL for Humans
 """
@@ -109,7 +109,7 @@ class DBConnect():
             results.append(data)
         return results
 
-    def insert(self, data, table, commit=True):
+    def insert(self, data, table, commit=True, update=None):
         """
         Insert dictionary object to database
         :type data: dict
@@ -117,6 +117,8 @@ class DBConnect():
         :type table: str
         :param table: Table name
         :param commit: Commit after every insert
+        :type update: dict
+        :param update: Update selected columns if key is duplicate
         :return: dict with Boolean status key and message
         """
         if not self.connection:
@@ -135,6 +137,15 @@ class DBConnect():
             query_insert = query_insert.rstrip(', ') + ')'
             query_value = query_value.rstrip(', ') + ')'
             query = query_insert + query_value
+            if update and len(update.keys()):
+                query += ' ON DUPLICATE KEY UPDATE '
+                for key in update:
+                    query += key + ' = '
+                    if isinstance(update[key], int):
+                        query += update[key] + ', '
+                    else:
+                        query += '"' + update[key] + '", '
+                query = query.rstrip(', ')
             # Format, execute and send to database:
             self.cursor.execute(query, data)
             if commit:

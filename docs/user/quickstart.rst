@@ -63,11 +63,19 @@ Fields:
 	- data: ``dict`` : dictionary with keys as column name, must be provided
 	- table: ``str`` : name of table, must be provided
 	- commit: ``bool`` : commit after insert command, default: True
+	- update: ``dict`` : Update selected columns if key is duplicate, default: None
 
 Example:
 
 	>>> new_user = {'name': 'Emin', 'company': 'pyninjas', 'website': 'mastizada.com'}
 	>>> database.insert(new_user, 'user')  # Adds new_user to user table
+
+Example 2:
+
+	>>> new_user = {'id': 1, 'name': 'Ramin', 'company': 'pyninjas', 'website': 'mastizada.com'}
+	>>> # if there is user with id=1, then update its name:
+	>>> updated_columns = {'name': 'Ramin'}
+	>>> database.insert(new_user, 'user', update=updated_columns)
 
 
 Update Data
