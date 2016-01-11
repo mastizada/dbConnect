@@ -29,3 +29,7 @@
 ** v 1.3 **:
 
 * Added update on key exists to update some columns if key is duplicate
+
+** v 1.4 **:
+
+* Added support for custom filter comparision

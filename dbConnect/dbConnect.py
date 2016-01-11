@@ -7,7 +7,7 @@ MySQL for Humans
 __name__ = "dbConnect"
 __description__ = 'MySQL for Humans'
 __author__ = "Emin Mastizada <emin@linux.com>"
-__version__ = '1.0'
+__version__ = '1.4'
 __license__ = "MPL 2.0"
 
 import mysql.connector  # MySQL Connector
@@ -73,10 +73,15 @@ class DBConnect():
         """
         Get data from table
         :param table: name of the table
+        :type table: str
         :param limit: result limit for fetch
+        :type limit: int
         :param fields: fields to get
+        :type fields: list
         :param filters: filters to get custom results (where)
+        :type filters: dict
         :param case: [AND, OR] for filter type
+        :type case: str
         :return: array of dictionary with column name and value
         """
         if fields:
@@ -89,7 +94,13 @@ class DBConnect():
         if filters:
             query += ' WHERE '
             for key in filters:
-                query += key + ' = ' + '%(' + key + ')s ' + case + ' '
+                if isinstance(filters[key], tuple):
+                    if len(filters[key]) != 2:
+                        raise ValueError("Missing case param in filter: %s" % filters[key][0])
+                    query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
+                    filters[key] = filters[key][0]
+                else:
+                    query += key + ' = ' + '%(' + key + ')s ' + case + ' '
             query = query.rstrip(case + ' ')
         query += ' LIMIT ' + str(limit)
         if filters:
@@ -182,7 +193,13 @@ class DBConnect():
             query_update = query_update.rstrip(', ') + ' '  # remove last comma and add empty space
             query_update += 'WHERE '
             for key in filters:
-                query_update += key + ' = %(where_' + key + ')s ' + case + ' '
+                if isinstance(filters[key], tuple):
+                    if len(filters[key]) != 2:
+                        raise ValueError("Missing case param in filter: %s" % filters[key][0])
+                    query_update += key + ' ' + filters[key][1] + ' ' + '%(where_' + key + ')s ' + case + ' '
+                    filters[key] = filters[key][0]
+                else:
+                    query_update += key + ' = ' + '%(where_' + key + ')s ' + case + ' '
             query_update = query_update.rstrip(case + ' ')
             # merge filters and data:
             for key in filters:
@@ -208,7 +225,13 @@ class DBConnect():
             raise ValueError("You must provide filter to delete some record(s). For all records try truncate")
         query = "DELETE FROM %s WHERE " % table
         for key in filters:
-            query += key + ' = %(' + key + ')s ' + case + ' '
+            if isinstance(filters[key], tuple):
+                if len(filters[key]) != 2:
+                    raise ValueError("Missing case param in filter: %s" % filters[key][0])
+                query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
+                filters[key] = filters[key][0]
+            else:
+                query += key + ' = ' + '%(' + key + ')s ' + case + ' '
         query = query.rstrip(case + ' ')
         self.cursor.execute(query, filters)
         if commit:

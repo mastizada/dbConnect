@@ -52,6 +52,7 @@ Fields:
 Example:
 
 	>>> database.fetch('user', limit=5, fields=['id', 'name', 'email'], filters={'company': 'pyninjas'})
+	>>> database.fetch('user', limit=5, filters={'id': (10, '>=')})  # Get 5 user whose id is higher than 10
 
 
 Insert Data
