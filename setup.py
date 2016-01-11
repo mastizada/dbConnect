@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='dbConnect',
-      version='1.4',
+      version='1.4.2',
       description='MySQL for Humans',
       keywords='dbConnect mysql simple easy, light connection module',
       url='https://github.com/mastizada/dbConnect',
@@ -10,7 +10,7 @@ setup(name='dbConnect',
       license='MPLv2',
       packages=['dbConnect'],
       install_requires=[
-          'mysql-connector-python', 'setuptools',
+          'setuptools',
       ],
       classifiers=[
         'Development Status :: 5 - Production/Stable',
