@@ -100,8 +100,15 @@ class DBConnect():
                 if isinstance(filters[key], tuple):
                     if len(filters[key]) != 2:
                         raise ValueError("Missing case param in filter: %s" % filters[key][0])
-                    query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
-                    filters[key] = filters[key][0]
+                    if filters[key][0] == None:
+                        query += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
+                        del(filters[key])
+                    else:
+                        query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
+                        filters[key] = filters[key][0]
+                elif filters[key] == None:
+                    query += key + ' is NULL ' + case + ' '
+                    del(filter[key])
                 else:
                     query += key + ' = ' + '%(' + key + ')s ' + case + ' '
             query = query.rstrip(case + ' ')
@@ -199,8 +206,12 @@ class DBConnect():
                 if isinstance(filters[key], tuple):
                     if len(filters[key]) != 2:
                         raise ValueError("Missing case param in filter: %s" % filters[key][0])
-                    query_update += key + ' ' + filters[key][1] + ' ' + '%(where_' + key + ')s ' + case + ' '
-                    filters[key] = filters[key][0]
+                    if filters[key][0] == None:
+                        query_update += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
+                        del(filters[key])
+                    else:
+                        query_update += key + ' ' + filters[key][1] + ' ' + '%(where_' + key + ')s ' + case + ' '
+                        filters[key] = filters[key][0]
                 else:
                     query_update += key + ' = ' + '%(where_' + key + ')s ' + case + ' '
             query_update = query_update.rstrip(case + ' ')
@@ -231,8 +242,12 @@ class DBConnect():
             if isinstance(filters[key], tuple):
                 if len(filters[key]) != 2:
                     raise ValueError("Missing case param in filter: %s" % filters[key][0])
-                query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
-                filters[key] = filters[key][0]
+                if filters[key][0] == None:
+                    query += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
+                    del(filters[key])
+                else:
+                    query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
+                    filters[key] = filters[key][0]
             else:
                 query += key + ' = ' + '%(' + key + ')s ' + case + ' '
         query = query.rstrip(case + ' ')

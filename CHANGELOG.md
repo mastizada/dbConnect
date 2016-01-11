@@ -33,3 +33,4 @@
 ** v 1.4 **:
 
 * Added support for custom filter comparision
+* Not NULL and is NULL support added

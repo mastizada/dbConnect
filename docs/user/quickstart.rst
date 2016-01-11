@@ -53,6 +53,9 @@ Example:
 
 	>>> database.fetch('user', limit=5, fields=['id', 'name', 'email'], filters={'company': 'pyninjas'})
 	>>> database.fetch('user', limit=5, filters={'id': (10, '>=')})  # Get 5 user whose id is higher than 10
+	>>> database.fetch('user', filters={'email': (None, 'is')}) # Get users whose email is NULL
+	>>> database.fetch('user', filters={'email': None}) # Same as (None, 'is')
+	>>> database.fetch('user', filters={'email': (None, 'is not')}) # Get users whole email is not NULL
 
 
 Insert Data
