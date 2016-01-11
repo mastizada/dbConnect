@@ -1,2 +1,0 @@
---allow-all-external
-mysql-connector-python==2.0.4

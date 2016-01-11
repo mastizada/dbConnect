@@ -10,8 +10,11 @@ __author__ = "Emin Mastizada <emin@linux.com>"
 __version__ = '1.4'
 __license__ = "MPL 2.0"
 
-import mysql.connector  # MySQL Connector
-from mysql.connector import errorcode
+try:
+    import mysql.connector  # MySQL Connector
+    from mysql.connector import errorcode
+except:
+    raise ValueError('Mysql Package not installed, go to: https://dev.mysql.com/downloads/connector/python/')
 import json
 
 
