@@ -34,3 +34,4 @@
 
 * Added support for custom filter comparision
 * Not NULL and is NULL support added
+* Added support for filters to find between two values

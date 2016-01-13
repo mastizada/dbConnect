@@ -56,6 +56,8 @@ Example:
 	>>> database.fetch('user', filters={'email': (None, 'is')}) # Get users whose email is NULL
 	>>> database.fetch('user', filters={'email': None}) # Same as (None, 'is')
 	>>> database.fetch('user', filters={'email': (None, 'is not')}) # Get users whole email is not NULL
+	>>> database.fetch('user', filters={'id': (0, 100, '<=>')}) # Get users whose id is between 0 and 100
+	>>> database.fetch('user', filters={'id': (0, 100, '<>')}) # Get users whose id is between 1 and 99
 
 
 Insert Data

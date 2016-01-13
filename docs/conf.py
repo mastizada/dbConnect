@@ -15,7 +15,7 @@
 import sys
 import os
 import shlex
-__version__ = '1.4'
+__version__ = '1.4.6'
 
 sys.path.insert(0, os.path.abspath('../dbConnect'))
 
