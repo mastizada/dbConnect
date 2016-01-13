@@ -257,20 +257,35 @@ class DBConnect:
         if not filters:
             raise ValueError("You must provide filter to delete some record(s). For all records try truncate")
         query = "DELETE FROM %s WHERE " % table
+        data = {}
         for key in filters:
             if isinstance(filters[key], tuple):
-                if len(filters[key]) != 2:
-                    raise ValueError("Missing case param in filter: %s" % filters[key][0])
-                if not filters[key][0]:
-                    query += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
-                    del(filters[key])
+                if len(filters[key]) == 3:
+                    "Like (id_start, id_end, '<=>')"
+                    if '=' in filters[key][2]:
+                        query += key + ' >= ' + '%(where_start_' + key + ')s AND ' + key + ' <= ' + \
+                                 '%(where_end_' + key + ')s ' + case + ' '
+                    else:
+                        query += key + ' > ' + '%(where_start_' + key + ')s AND ' + key + ' < ' + \
+                                 '%(where_end_' + key + ')s ' + case + ' '
+                    data['where_start_' + key] = filters[key][0]
+                    data['where_end_' + key] = filters[key][1]
+                elif len(filters[key]) == 2:
+                    "Like (id_start, '>=')"
+                    if filters[key][0]:
+                        query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
+                        data[key] = filters[key][0]
+                    else:
+                        query += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
                 else:
-                    query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
-                    filters[key] = filters[key][0]
+                    raise ValueError("Missing case param in filter: %s" % filters[key][0])
+            elif not filters[key]:
+                query += key + ' is NULL ' + case + ' '
             else:
                 query += key + ' = ' + '%(' + key + ')s ' + case + ' '
+                data[key] = filters[key]
         query = query.rstrip(case + ' ')
-        self.cursor.execute(query, filters)
+        self.cursor.execute(query, data)
         if commit:
             self.connection.commit()
 
