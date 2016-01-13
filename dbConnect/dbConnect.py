@@ -94,27 +94,44 @@ class DBConnect():
             query = query.rstrip(', ') + ' FROM ' + str(table)
         else:
             query = 'SELECT * FROM %s' % table
+        data = {}
         if filters:
             query += ' WHERE '
             for key in filters:
                 if isinstance(filters[key], tuple):
-                    if len(filters[key]) != 2:
-                        raise ValueError("Missing case param in filter: %s" % filters[key][0])
-                    if filters[key][0] == None:
-                        query += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
+                    if len(filters[key]) == 3:
+                        "Like (id_start, id_end, '<=>')"
+                        if '=' in filters[key][2]:
+                            query += key + ' >= ' + '%(where_start_' + key + ')s AND ' + key + ' <= ' + \
+                                     '%(where_end_' + key + ')s ' + case + ' '
+                        else:
+                            query += key + ' > ' + '%(where_start_' + key + ')s AND ' + key + ' < ' + \
+                                     '%(where_end_' + key + ')s ' + case + ' '
+                        data['where_start_' + key] = filters[key][0]
+                        data['where_end_' + key] = filters[key][1]
                         del(filters[key])
+                    elif len(filters[key]) == 2:
+                        "Like (id_start, '>=')"
+                        if not filters[key][0]:
+                            query += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
+                            del(filters[key])
+                        else:
+                            query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
+                            data[key] = filters[key][0]
                     else:
-                        query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
-                        filters[key] = filters[key][0]
-                elif filters[key] == None:
+                        raise ValueError("Missing case param in filter: %s" % filters[key][0])
+                elif not filters[key]:
                     query += key + ' is NULL ' + case + ' '
                     del(filter[key])
                 else:
                     query += key + ' = ' + '%(' + key + ')s ' + case + ' '
+                    data[key] = filters[key]
             query = query.rstrip(case + ' ')
+        else:
+            data = None
         query += ' LIMIT ' + str(limit)
-        if filters:
-            self.cursor.execute(query, filters)
+        if data:
+            self.cursor.execute(query, data)
         else:
             self.cursor.execute(query)
         items = self.cursor.fetchall()
@@ -186,6 +203,10 @@ class DBConnect():
         :param filters: Objects with keys as column name for filters statement
         :type table: str
         :param table: Table name
+        :type case: str
+        :param case: Search case, Should be 'AND' or 'OR'
+        :type commit: bool
+        :param commit: Commit at the end or add to pool
         :return: dict with Boolean status key and message
         """
         if not self.connection:
@@ -206,7 +227,7 @@ class DBConnect():
                 if isinstance(filters[key], tuple):
                     if len(filters[key]) != 2:
                         raise ValueError("Missing case param in filter: %s" % filters[key][0])
-                    if filters[key][0] == None:
+                    if not filters[key][0]:
                         query_update += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
                         del(filters[key])
                     else:
@@ -234,6 +255,7 @@ class DBConnect():
         :param table: name of table
         :param filters: filter for item(s) to be deleted
         :param case: [AND, OR] case for filter
+        :param commit: Commit at the end or add to pool
         """
         if not filters:
             raise ValueError("You must provide filter to delete some record(s). For all records try truncate")
@@ -242,7 +264,7 @@ class DBConnect():
             if isinstance(filters[key], tuple):
                 if len(filters[key]) != 2:
                     raise ValueError("Missing case param in filter: %s" % filters[key][0])
-                if filters[key][0] == None:
+                if not filters[key][0]:
                     query += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
                     del(filters[key])
                 else:
