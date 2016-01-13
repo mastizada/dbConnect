@@ -1,6 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+import json
+try:
+    import mysql.connector  # MySQL Connector
+    from mysql.connector import errorcode
+except:
+    raise ValueError('Mysql Package not installed, go to: https://dev.mysql.com/downloads/connector/python/')
+
 """
 MySQL for Humans
 """
@@ -10,15 +17,8 @@ __author__ = "Emin Mastizada <emin@linux.com>"
 __version__ = '1.4'
 __license__ = "MPL 2.0"
 
-try:
-    import mysql.connector  # MySQL Connector
-    from mysql.connector import errorcode
-except:
-    raise ValueError('Mysql Package not installed, go to: https://dev.mysql.com/downloads/connector/python/')
-import json
 
-
-class DBConnect():
+class DBConnect:
     """
     Light database connection object
     """
@@ -109,12 +109,10 @@ class DBConnect():
                                      '%(where_end_' + key + ')s ' + case + ' '
                         data['where_start_' + key] = filters[key][0]
                         data['where_end_' + key] = filters[key][1]
-                        del(filters[key])
                     elif len(filters[key]) == 2:
                         "Like (id_start, '>=')"
                         if not filters[key][0]:
                             query += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
-                            del(filters[key])
                         else:
                             query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
                             data[key] = filters[key][0]
@@ -122,7 +120,6 @@ class DBConnect():
                         raise ValueError("Missing case param in filter: %s" % filters[key][0])
                 elif not filters[key]:
                     query += key + ' is NULL ' + case + ' '
-                    del(filter[key])
                 else:
                     query += key + ' = ' + '%(' + key + ')s ' + case + ' '
                     data[key] = filters[key]
