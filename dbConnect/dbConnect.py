@@ -220,22 +220,37 @@ class DBConnect:
                 query_update += key + ' = %(' + key + ')s, '
             query_update = query_update.rstrip(', ') + ' '  # remove last comma and add empty space
             query_update += 'WHERE '
+            where_data = {}
             for key in filters:
                 if isinstance(filters[key], tuple):
-                    if len(filters[key]) != 2:
-                        raise ValueError("Missing case param in filter: %s" % filters[key][0])
-                    if not filters[key][0]:
-                        query_update += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
-                        del(filters[key])
+                    if len(filters[key]) == 3:
+                        "Like (id_start, id_end, '<=>')"
+                        if '=' in filters[key][2]:
+                            query_update += key + ' >= ' + '%(where_start_' + key + ')s AND ' + key + ' <= ' + \
+                                     '%(where_end_' + key + ')s ' + case + ' '
+                        else:
+                            query_update += key + ' > ' + '%(where_start_' + key + ')s AND ' + key + ' < ' + \
+                                     '%(where_end_' + key + ')s ' + case + ' '
+                        where_data['start_' + key] = filters[key][0]
+                        where_data['end_' + key] = filters[key][1]
+                    elif len(filters[key]) == 2:
+                        "Like (id_start, '>=')"
+                        if not filters[key][0]:
+                            query_update += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
+                        else:
+                            query_update += key + ' ' + filters[key][1] + ' ' + '%(where_' + key + ')s ' + case + ' '
+                            where_data[key] = filters[key][0]
                     else:
-                        query_update += key + ' ' + filters[key][1] + ' ' + '%(where_' + key + ')s ' + case + ' '
-                        filters[key] = filters[key][0]
+                        raise ValueError("Missing case param in filter: %s" % filters[key][0])
+                elif not filters[key]:
+                    query_update += key + ' is NULL ' + case + ' '
                 else:
                     query_update += key + ' = ' + '%(where_' + key + ')s ' + case + ' '
+                    where_data[key] = filters[key]
             query_update = query_update.rstrip(case + ' ')
             # merge filters and data:
-            for key in filters:
-                data['where_' + key] = filters[key]
+            for key in where_data:
+                data['where_' + key] = where_data[key]
             # execute and send to database:
             self.cursor.execute(query_update, data)
             if commit:
