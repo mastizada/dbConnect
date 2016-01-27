@@ -8,16 +8,6 @@ try:
 except:
     raise ValueError('Mysql Package not installed, go to: https://dev.mysql.com/downloads/connector/python/')
 
-"""
-MySQL for Humans
-"""
-__name__ = "dbConnect"
-__description__ = 'MySQL for Humans'
-__author__ = "Emin Mastizada <emin@linux.com>"
-__version__ = '1.4.6'
-__license__ = "MPL 2.0"
-
-
 class DBConnect:
     """
     Light database connection object
