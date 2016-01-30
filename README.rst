@@ -1,7 +1,8 @@
 dbConnect: MySQL for Humans
 ===========================
 .. image:: https://readthedocs.org/projects/dbconnect/badge/?version=latest
-   :target: https://readthedocs.org/projects/dbconnect/?badge=latest
+   :target: http://dbconnect.readthedocs.org/?badge=latest
+   :alt: Documentation Status
 
 Installation
 =============
