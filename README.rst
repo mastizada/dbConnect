@@ -6,6 +6,17 @@ dbConnect: MySQL for Humans
 
 Installation
 =============
+requirements:
+^^^^^^^^^^^^^
+dbConnect uses mysql.connector module, install it using:
+
+.. code-block:: bash
+
+  $ apt-get install python3-mysql.connector
+  $ apt-get install python-mysql.connector
+
+Or using offical site: `https://dev.mysql.com/downloads/connector/python/`
+
 using pip:
 ^^^^^^^^^^
 

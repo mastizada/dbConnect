@@ -6,6 +6,15 @@ Installation
 This part of the documentation covers the installation of dbConnect.
 
 
+Requirements
+------------
+
+dbConnect uses mysql.connector, install it using::
+
+    $ apt-get install python3-mysql.connector
+    $ apt-get install python-mysql.connector
+
+
 Distribute & Pip
 ----------------
 

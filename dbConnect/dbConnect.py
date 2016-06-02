@@ -6,7 +6,7 @@ try:
     import mysql.connector  # MySQL Connector
     from mysql.connector import errorcode
 except:
-    raise ValueError('Mysql Package not installed, go to: https://dev.mysql.com/downloads/connector/python/')
+    raise ValueError('Please, install mysql-connector module before using plugin.')
 
 class DBConnect:
     """
