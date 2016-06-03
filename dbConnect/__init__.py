@@ -8,4 +8,4 @@ __version__ = '1.4.6'
 __license__ = "MPL 2.0"
 __doc__ = """MySQL for Humans"""
 
-from .dbconnect import DBConnect
+from .dbConnect import DBConnect
