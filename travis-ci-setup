@@ -3,5 +3,6 @@
 mysql $* <<EOF
 DROP DATABASE IF EXISTS dbconnect_test;
 CREATE DATABASE dbconnect_test;
+USE dbconnect_test;
 CREATE TABLE test (id int(11) NOT NULL AUTO_INCREMENT, name varchar(100) NOT NULL DEFAULT '0', email varchar(100) DEFAULT '0', views int(11) NOT NULL DEFAULT '0', PRIMARY KEY (id)) DEFAULT CHARSET=utf8;
 EOF
