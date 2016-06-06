@@ -1,0 +1,20 @@
+dist: trusty
+sudo: required
+language: python
+addons:
+  apt:
+    packages:
+      - python3-mysql.connector
+      - python-mysql.connector
+python:
+  - "2.7"
+  - "3.5"
+  - "pypy"
+  - "pypy3"
+services:
+  - mysql
+install:
+  - pip install -r requirements.txt
+before_script:
+  - "./travis-ci-setup -h127.0.0.1 -utravis"
+script: python tests.py

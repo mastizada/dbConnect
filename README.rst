@@ -1,8 +1,10 @@
 dbConnect: MySQL for Humans
 ===========================
 .. image:: https://readthedocs.org/projects/dbconnect/badge/?version=latest
-   :target: http://dbconnect.readthedocs.org/?badge=latest
-   :alt: Documentation Status
+  :target: http://dbconnect.readthedocs.org/?badge=latest
+  :alt: Documentation Status
+.. image:: https://travis-ci.org/mastizada/dbConnect.svg?branch=master
+  :target: https://travis-ci.org/mastizada/dbConnect
 
 Installation
 =============
@@ -39,11 +41,11 @@ Usage
 Importing and making a connection:
 
 .. code-block:: python
-	
+
 	>>> from dbConnect import DBConnect
 	>>> database = DBConnect(credentials.json)
 	>>> database.fetch('tableName', limit=5, filters={'company': 'pyninjas'})
-    
+
 Documentation
 =============
 
@@ -51,23 +53,17 @@ Documentation
 - Another Docs: https://pythonhosted.org/dbConnect/
 - Check generated documentation using:
 
-	.. code-block:: bash 
+	.. code-block:: bash
 
-		$ pydoc3 dbConnect 
+		$ pydoc3 dbConnect
 
-	or 
+	or
 
 	.. code-block:: bash
 
-		$ pydoc3 -p 1994 
+		$ pydoc3 -p 1994
 
 	and open localhost:1994/ in browser
 
 Enjoy
 =====
-
-.. raw:: html
-	
-	<a href="http://mastizada.com">
-		<img src="https://ga-beacon.appspot.com/UA-36541010-2/dbConnect/Readme" />
-	</a>

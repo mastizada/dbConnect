@@ -35,3 +35,11 @@
 * Added support for custom filter comparision
 * Not NULL and is NULL support added
 * Added support for filters to find between two values
+
+** v 1.5.0 **:
+
+* README changed to rst from markdown, and design improvements. Thanks to Said Ozcan
+* Port support added. Thanks to Devashish Chandra
+* Increment function added
+* where builder moved to function.
+* Travis-CI integration

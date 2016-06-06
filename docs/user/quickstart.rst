@@ -117,6 +117,24 @@ Example:
 	>>> database.delete('user', {'id': 1, 'name': 'Emin Mastizada'}, case='OR')
 
 
+Increment Columns
+-----------------
+
+Increment provided columns.
+
+Fields:
+	- table: ``str`` : name of table, must be provided
+	- columns: ``array`` : column names to increment, must be provided
+	- steps: ``int`` : Steps to increment, must be provided
+	- filters: ``dict`` : filters to find row(s)
+	- case: ``str`` : search case for filter [AND, OR], default ``'AND'``
+	- commit: ``bool`` : commit after insert command, default: True
+
+Example:
+
+	>>> database.increment('user', ['views'], steps=2, filters={'id': 1})
+
+
 Commit Data
 -----------
 

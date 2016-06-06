@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='dbConnect',
-    version='1.4.6',
+    version='1.5.0',
     description='MySQL for Humans',
     keywords='dbConnect mysql simple easy, light connection module',
     url='https://github.com/mastizada/dbConnect',

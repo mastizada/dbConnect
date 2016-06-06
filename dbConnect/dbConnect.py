@@ -51,7 +51,8 @@ class DBConnect:
         if host and user and password and database:
             self.settings = {"host": host, "user": user, "password": password, "database": database, "port": port}
         else:
-            self.settings = json.load(open(credentials_file, 'r'))
+            with open(credentials_file, 'r') as f:
+                self.settings = json.load(f)
             if 'port' not in self.settings:
                 self.settings['port'] = port
         self._check_settings(self)
@@ -64,6 +65,43 @@ class DBConnect:
         Disconnect from database
         """
         self.connection.close()
+
+    @staticmethod
+    def _where_builder(filters, case):
+        """
+        Build where part for query
+        :param filters: dict filters for rows (where)
+        :return: str update query and dict where data
+        """
+        query = ""
+        where_data = {}
+        for key in filters:
+            if isinstance(filters[key], tuple):
+                if len(filters[key]) == 3:
+                    "Like (id_start, id_end, '<=>')"
+                    if '=' in filters[key][2]:
+                        query += key + ' >= ' + '%(where_start_' + key + ')s AND ' + key + ' <= ' + \
+                                 '%(where_end_' + key + ')s ' + case + ' '
+                    else:
+                        query += key + ' > ' + '%(where_start_' + key + ')s AND ' + key + ' < ' + \
+                                 '%(where_end_' + key + ')s ' + case + ' '
+                    where_data['start_' + key] = filters[key][0]
+                    where_data['end_' + key] = filters[key][1]
+                elif len(filters[key]) == 2:
+                    "Like (id_start, '>=')"
+                    if not filters[key][0]:
+                        query += key + ' ' + filters[key][1] + ' ' + 'NULL ' + case + ' '
+                    else:
+                        query += key + ' ' + filters[key][1] + ' ' + '%(where_' + key + ')s ' + case + ' '
+                        where_data[key] = filters[key][0]
+                else:
+                    raise ValueError("Missing case param in filter: %s" % filters[key][0])
+            elif not filters[key] and not isinstance(filters[key], int):
+                query += key + ' is NULL ' + case + ' '
+            else:
+                query += key + ' = ' + '%(where_' + key + ')s ' + case + ' '
+                where_data[key] = filters[key]
+        return query.rstrip(case + ' '), where_data
 
     def fetch(self, table, limit=1000, fields=None, filters=None, case='AND'):
         """
@@ -87,38 +125,14 @@ class DBConnect:
             query = query.rstrip(', ') + ' FROM ' + str(table)
         else:
             query = 'SELECT * FROM %s' % table
-        data = {}
+        data = None
         if filters:
+            data = {}
             query += ' WHERE '
-            for key in filters:
-                if isinstance(filters[key], tuple):
-                    if len(filters[key]) == 3:
-                        "Like (id_start, id_end, '<=>')"
-                        if '=' in filters[key][2]:
-                            query += key + ' >= ' + '%(where_start_' + key + ')s AND ' + key + ' <= ' + \
-                                     '%(where_end_' + key + ')s ' + case + ' '
-                        else:
-                            query += key + ' > ' + '%(where_start_' + key + ')s AND ' + key + ' < ' + \
-                                     '%(where_end_' + key + ')s ' + case + ' '
-                        data['where_start_' + key] = filters[key][0]
-                        data['where_end_' + key] = filters[key][1]
-                    elif len(filters[key]) == 2:
-                        "Like (id_start, '>=')"
-                        if not filters[key][0]:
-                            query += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
-                        else:
-                            query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
-                            data[key] = filters[key][0]
-                    else:
-                        raise ValueError("Missing case param in filter: %s" % filters[key][0])
-                elif not filters[key]:
-                    query += key + ' is NULL ' + case + ' '
-                else:
-                    query += key + ' = ' + '%(' + key + ')s ' + case + ' '
-                    data[key] = filters[key]
-            query = query.rstrip(case + ' ')
-        else:
-            data = None
+            update_query, where_data = self._where_builder(filters, case)
+            query += update_query
+            for key in where_data:
+                data['where_' + key] = where_data[key]
         query += ' LIMIT ' + str(limit)
         if data:
             self.cursor.execute(query, data)
@@ -177,7 +191,7 @@ class DBConnect:
             # Format, execute and send to database:
             self.cursor.execute(query, data)
             if commit:
-                self.connection.commit()
+                self.commit()
         except Exception as e:
             if not isinstance(e, str):
                 e = str(e)
@@ -213,41 +227,15 @@ class DBConnect:
                 query_update += key + ' = %(' + key + ')s, '
             query_update = query_update.rstrip(', ') + ' '  # remove last comma and add empty space
             query_update += 'WHERE '
-            where_data = {}
-            for key in filters:
-                if isinstance(filters[key], tuple):
-                    if len(filters[key]) == 3:
-                        "Like (id_start, id_end, '<=>')"
-                        if '=' in filters[key][2]:
-                            query_update += key + ' >= ' + '%(where_start_' + key + ')s AND ' + key + ' <= ' + \
-                                     '%(where_end_' + key + ')s ' + case + ' '
-                        else:
-                            query_update += key + ' > ' + '%(where_start_' + key + ')s AND ' + key + ' < ' + \
-                                     '%(where_end_' + key + ')s ' + case + ' '
-                        where_data['start_' + key] = filters[key][0]
-                        where_data['end_' + key] = filters[key][1]
-                    elif len(filters[key]) == 2:
-                        "Like (id_start, '>=')"
-                        if not filters[key][0]:
-                            query_update += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
-                        else:
-                            query_update += key + ' ' + filters[key][1] + ' ' + '%(where_' + key + ')s ' + case + ' '
-                            where_data[key] = filters[key][0]
-                    else:
-                        raise ValueError("Missing case param in filter: %s" % filters[key][0])
-                elif not filters[key]:
-                    query_update += key + ' is NULL ' + case + ' '
-                else:
-                    query_update += key + ' = ' + '%(where_' + key + ')s ' + case + ' '
-                    where_data[key] = filters[key]
-            query_update = query_update.rstrip(case + ' ')
+            update_query, where_data = self._where_builder(filters, case)
+            query_update += update_query
             # merge filters and data:
             for key in where_data:
                 data['where_' + key] = where_data[key]
             # execute and send to database:
             self.cursor.execute(query_update, data)
             if commit:
-                self.connection.commit()
+                self.commit()
         except Exception as e:
             if not isinstance(e, str):
                 e = str(e)
@@ -266,36 +254,43 @@ class DBConnect:
             raise ValueError("You must provide filter to delete some record(s). For all records try truncate")
         query = "DELETE FROM %s WHERE " % table
         data = {}
-        for key in filters:
-            if isinstance(filters[key], tuple):
-                if len(filters[key]) == 3:
-                    "Like (id_start, id_end, '<=>')"
-                    if '=' in filters[key][2]:
-                        query += key + ' >= ' + '%(where_start_' + key + ')s AND ' + key + ' <= ' + \
-                                 '%(where_end_' + key + ')s ' + case + ' '
-                    else:
-                        query += key + ' > ' + '%(where_start_' + key + ')s AND ' + key + ' < ' + \
-                                 '%(where_end_' + key + ')s ' + case + ' '
-                    data['where_start_' + key] = filters[key][0]
-                    data['where_end_' + key] = filters[key][1]
-                elif len(filters[key]) == 2:
-                    "Like (id_start, '>=')"
-                    if filters[key][0]:
-                        query += key + ' ' + filters[key][1] + ' ' + '%(' + key + ')s ' + case + ' '
-                        data[key] = filters[key][0]
-                    else:
-                        query += key + ' ' + filters[key][1] + ' ' + 'NULL' + case + ' '
-                else:
-                    raise ValueError("Missing case param in filter: %s" % filters[key][0])
-            elif not filters[key]:
-                query += key + ' is NULL ' + case + ' '
-            else:
-                query += key + ' = ' + '%(' + key + ')s ' + case + ' '
-                data[key] = filters[key]
-        query = query.rstrip(case + ' ')
+        update_query, where_data = self._where_builder(filters, case)
+        query += update_query
+        for key in where_data:
+            data['where_' + key] = where_data[key]
         self.cursor.execute(query, data)
         if commit:
-            self.connection.commit()
+            self.commit()
+
+    def increment(self, table, columns, steps=1, filters=None, case="AND", commit=True):
+        """
+        Increment column in table
+        :param table: str table name
+        :param columns: list column names to increment
+        :param steps: int steps to increment, default is 1
+        :param filters: dict filters for rows to use
+        :note: If you use safe update mode, filters should be provided
+        """
+        if not columns:
+            raise ValueError("You must provide which columns to update")
+        query = "UPDATE %s SET " % str(table)
+        for column in columns:
+            query += "{column} = {column} + {steps}, ".format(column=column, steps=steps)
+        query = query.rstrip(', ')
+        data = {}
+        if filters:
+            query += ' WHERE '
+            update_query, where_data = self._where_builder(filters, case)
+            query += update_query
+            for key in where_data:
+                data['where_' + key] = where_data[key]
+        try:
+            self.cursor.execute(query, data)
+        except Exception as e:
+            return {'status': False, 'message': str(e)}
+        if commit:
+            self.commit()
+        return {'status': True, 'message': "Columns incremented"}
 
     def commit(self):
         """
