@@ -6,6 +6,9 @@ addons:
     packages:
       - python3-mysql.connector
       - python-mysql.connector
+      - mysql-server-5.6
+      - mysql-client-core-5.6
+      - mysql-client-5.6
 python:
   - "2.7"
   - "3.5"
@@ -16,5 +19,5 @@ services:
 install:
   - pip install -r requirements.txt
 before_script:
-  - "./travis-ci-setup"
+  - "./travis-ci-setup -h127.0.0.1 -uroot"
 script: python tests.py
