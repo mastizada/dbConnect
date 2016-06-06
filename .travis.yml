@@ -16,5 +16,5 @@ services:
 install:
   - pip install -r requirements.txt
 before_script:
-  - "./travis-ci-setup -h127.0.0.1 -utravis"
+  - "./travis-ci-setup"
 script: python tests.py
