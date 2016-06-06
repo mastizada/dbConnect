@@ -20,4 +20,13 @@ install:
   - pip install -r requirements.txt
 before_script:
   - "./travis-ci-setup -h127.0.0.1 -uroot"
+virtualenv:
+  system_site_packages: true
 script: python tests.py
+notifications:
+  irc:
+    channels: "irc.mozilla.org#dbConnect"
+    template:
+      - "%{repository}@%{branch}: %{message} (%{build_url})"
+    on_success: change
+    on_failure: change
