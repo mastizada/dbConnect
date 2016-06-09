@@ -8,11 +8,11 @@ try:
 except:
     raise ValueError('Please, install mysql-connector module before using plugin.')
 
+
 class DBConnect:
     """
     Light database connection object
     """
-    @staticmethod
     def _check_settings(self):
         """
         Check configuration file
@@ -44,9 +44,11 @@ class DBConnect:
                 raise ValueError(err)
         self.cursor = self.connection.cursor()
 
-    def __init__(self, credentials_file='credentials.json', host=None, user=None, password=None, database=None, port=3306):
+    def __init__(self, credentials_file='credentials.json', host=None, user=None,
+                 password=None, database=None, port=3306):
         """
         Initialise object with credentials file provided
+        You can choose between providing file or connection details
         """
         if host and user and password and database:
             self.settings = {"host": host, "user": user, "password": password, "database": database, "port": port}
@@ -55,7 +57,7 @@ class DBConnect:
                 self.settings = json.load(f)
             if 'port' not in self.settings:
                 self.settings['port'] = port
-        self._check_settings(self)
+        self._check_settings()
         self.connection = None
         self.cursor = None
         self.connect()
@@ -78,7 +80,7 @@ class DBConnect:
         for key in filters:
             if isinstance(filters[key], tuple):
                 if len(filters[key]) == 3:
-                    "Like (id_start, id_end, '<=>')"
+                    # Like (id_start, id_end, '<=>')
                     if '=' in filters[key][2]:
                         query += key + ' >= ' + '%(where_start_' + key + ')s AND ' + key + ' <= ' + \
                                  '%(where_end_' + key + ')s ' + case + ' '
@@ -88,7 +90,7 @@ class DBConnect:
                     where_data['start_' + key] = filters[key][0]
                     where_data['end_' + key] = filters[key][1]
                 elif len(filters[key]) == 2:
-                    "Like (id_start, '>=')"
+                    # Like (id_start, '>=')
                     if not filters[key][0]:
                         query += key + ' ' + filters[key][1] + ' ' + 'NULL ' + case + ' '
                     else:
@@ -179,7 +181,8 @@ class DBConnect:
             query_insert = query_insert.rstrip(', ') + ')'
             query_value = query_value.rstrip(', ') + ')'
             query = query_insert + query_value
-            if update and len(update.keys()):
+            if update and bool(update):
+                # bool(dict) checks if dict is not empty
                 query += ' ON DUPLICATE KEY UPDATE '
                 for key in update:
                     query += key + ' = '
@@ -269,6 +272,8 @@ class DBConnect:
         :param columns: list column names to increment
         :param steps: int steps to increment, default is 1
         :param filters: dict filters for rows to use
+        :param case: Search case, Should be 'AND' or 'OR'
+        :param commit: Commit at the end or add to pool
         :note: If you use safe update mode, filters should be provided
         """
         if not columns:

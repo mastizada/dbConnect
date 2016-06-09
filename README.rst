@@ -5,6 +5,9 @@ dbConnect: MySQL for Humans
   :alt: Documentation Status
 .. image:: https://travis-ci.org/mastizada/dbConnect.svg?branch=master
   :target: https://travis-ci.org/mastizada/dbConnect
+.. image:: https://landscape.io/github/mastizada/dbConnect/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/mastizada/dbConnect/master
+   :alt: Code Health
 
 Installation
 =============
