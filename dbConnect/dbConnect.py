@@ -6,7 +6,9 @@ try:
     import mysql.connector  # MySQL Connector
     from mysql.connector import errorcode
 except:
-    raise ValueError('Please, install mysql-connector module before using plugin.')
+    raise ValueError(
+        'Please, install mysql-connector module before using plugin.'
+    )
 
 
 class DBConnect:
@@ -18,48 +20,53 @@ class DBConnect:
         Check configuration file
         :return: True if all settings are correct
         """
-        keys = ['host', 'user', 'password', 'database', 'port']
+        keys = ['host', 'user', 'password', 'database']
         if not all(key in self.settings.keys() for key in keys):
-            raise ValueError('Please check credentials file for correct keys: host, user, password, database, port')
+            raise ValueError(
+                'Please check credentials file for correct keys: host, user, '
+                'password, database'
+            )
 
     def connect(self):
         """
         Creates connection to database, sets connection and cursor
-        Connection to database can be loosed, if that happens you can use this function to reconnect to database
+        Connection to database can be loosed,
+          if that happens you can use this function to reconnect to database
         """
         try:
-            self.connection = mysql.connector.connect(
-                user=self.settings['user'],
-                password=self.settings['password'],
-                host=self.settings['host'],
-                database=self.settings['database'],
-                charset='utf8',
-                port=self.settings['port'])
+            self.connection = mysql.connector.connect(**self.settings)
         except mysql.connector.Error as err:
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
                 raise ValueError("Wrong credentials, ACCESS DENIED")
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
-                raise ValueError("Database %s does not exists" % (self.settings['database']))
+                raise ValueError(
+                    "Database %s does not exists" % (self.settings['database'])
+                )
             else:
                 raise ValueError(err)
         self.cursor = self.connection.cursor()
 
-    def __init__(self, credentials_file='credentials.json', host=None, user=None,
-                 password=None, database=None, port=3306):
+    def __init__(self, credentials_file=None, charset='utf8',
+                 port=3306, **kwargs):
         """
         Initialise object with credentials file provided
         You can choose between providing file or connection details
+        Available parameters:
+          https://dev.mysql.com/doc/connector-python/en/connector-python-connectargs.html
         """
-        if host and user and password and database:
-            self.settings = {"host": host, "user": user, "password": password, "database": database, "port": port}
-        else:
+        if credentials_file:
             with open(credentials_file, 'r') as f:
                 self.settings = json.load(f)
             if 'port' not in self.settings:
                 self.settings['port'] = port
+            if 'charset' not in self.settings:
+                self.settings['charset'] = charset
+        # Merge with kwargs
+        self.settings.update(**kwargs)
         self._check_settings()
         self.connection = None
         self.cursor = None
+        # Establish connection and set cursor
         self.connect()
 
     def disconnect(self):
@@ -82,22 +89,29 @@ class DBConnect:
                 if len(filters[key]) == 3:
                     # Like (id_start, id_end, '<=>')
                     if '=' in filters[key][2]:
-                        query += key + ' >= ' + '%(where_start_' + key + ')s AND ' + key + ' <= ' + \
-                                 '%(where_end_' + key + ')s ' + case + ' '
+                        query += key + ' >= ' + \
+                                 '%(where_start_' + key + ')s AND ' + key + \
+                                 ' <= ' + '%(where_end_' + key + ')s ' + \
+                                 case + ' '
                     else:
-                        query += key + ' > ' + '%(where_start_' + key + ')s AND ' + key + ' < ' + \
-                                 '%(where_end_' + key + ')s ' + case + ' '
+                        query += key + ' > ' + '%(where_start_' + key + \
+                                 ')s AND ' + key + ' < ' + '%(where_end_' + \
+                                 key + ')s ' + case + ' '
                     where_data['start_' + key] = filters[key][0]
                     where_data['end_' + key] = filters[key][1]
                 elif len(filters[key]) == 2:
                     # Like (id_start, '>=')
                     if not filters[key][0]:
-                        query += key + ' ' + filters[key][1] + ' ' + 'NULL ' + case + ' '
+                        query += key + ' ' + filters[key][1] + ' ' + \
+                                 'NULL ' + case + ' '
                     else:
-                        query += key + ' ' + filters[key][1] + ' ' + '%(where_' + key + ')s ' + case + ' '
+                        query += key + ' ' + filters[key][1] + ' ' + \
+                                 '%(where_' + key + ')s ' + case + ' '
                         where_data[key] = filters[key][0]
                 else:
-                    raise ValueError("Missing case param in filter: %s" % filters[key][0])
+                    raise ValueError(
+                        "Missing case param in filter: %s" % filters[key][0]
+                    )
             elif not filters[key] and not isinstance(filters[key], int):
                 query += key + ' is NULL ' + case + ' '
             else:
@@ -228,7 +242,8 @@ class DBConnect:
             query_update = "UPDATE %s SET " % table
             for key in data:
                 query_update += key + ' = %(' + key + ')s, '
-            query_update = query_update.rstrip(', ') + ' '  # remove last comma and add empty space
+            # remove last comma and add empty space
+            query_update = query_update.rstrip(', ') + ' '
             query_update += 'WHERE '
             update_query, where_data = self._where_builder(filters, case)
             query_update += update_query
@@ -254,7 +269,10 @@ class DBConnect:
         :param commit: Commit at the end or add to pool
         """
         if not filters:
-            raise ValueError("You must provide filter to delete some record(s). For all records try truncate")
+            raise ValueError(
+                "You must provide filter to delete some record(s). "
+                "For all records try truncate"
+            )
         query = "DELETE FROM %s WHERE " % table
         data = {}
         update_query, where_data = self._where_builder(filters, case)
@@ -265,7 +283,8 @@ class DBConnect:
         if commit:
             self.commit()
 
-    def increment(self, table, columns, steps=1, filters=None, case="AND", commit=True):
+    def increment(self, table, columns, steps=1, filters=None,
+                  case="AND", commit=True):
         """
         Increment column in table
         :param table: str table name
@@ -280,7 +299,8 @@ class DBConnect:
             raise ValueError("You must provide which columns to update")
         query = "UPDATE %s SET " % str(table)
         for column in columns:
-            query += "{column} = {column} + {steps}, ".format(column=column, steps=steps)
+            query += "{column} = {column} + {steps}, ".format(
+                    column=column, steps=steps)
         query = query.rstrip(', ')
         data = {}
         if filters:

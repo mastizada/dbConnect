@@ -5,10 +5,10 @@ with open('README.rst', 'r') as f:
 
 setup(
     name='dbConnect',
-    version='1.5.0',
+    version='1.6.0',
     description='MySQL for Humans',
     long_description=readme,
-    keywords='dbConnect mysql simple easy, light connection module',
+    keywords='dbConnect, mysql, simple, easy, light, connection module',
     url='https://github.com/mastizada/dbConnect',
     author='Emin Mastizada',
     author_email='emin@linux.com',

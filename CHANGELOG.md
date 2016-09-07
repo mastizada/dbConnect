@@ -43,3 +43,9 @@
 * Increment function added
 * where builder moved to function.
 * Travis-CI integration
+
+** v 1.6.0 **:
+
+* Support for all available connection parameters in mysql.connector
+* Added example for execution of custom queries
+* Added Link for available connection parameters

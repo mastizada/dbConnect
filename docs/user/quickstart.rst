@@ -28,7 +28,9 @@ Or provide database details:
 
 	>>> database = DBConnect(host='127.0.0.1', user='root', password='', database='test')
 
-After successfull connection there will be **database.connection** and
+You can provide any other parameters that are available in `mysql.connector <https://dev.mysql.com/doc/connector-python/en/connector-python-connectargs.html>`_
+
+* After successfull connection there will be **database.connection** and
 **database.cursor** variables that can be used as in official MySQL
 documentation.
 
@@ -133,6 +135,20 @@ Fields:
 Example:
 
 	>>> database.increment('user', ['views'], steps=2, filters={'id': 1})
+
+
+Custom SQL Query
+----------------
+
+Execute custom sql queries when you need something complex.
+
+Example:
+
+	>>> database.cursor.execute("SELECT * FROM table WHERE id = 5")
+	>>> results = database.cursor.fetchall()
+
+	>>> database.cursor.execute("SELECT u.name FROM users as u INNER JOIN tasks as t ON t.user = u.id WHERE t.progress = 'assigned'")
+	>>> users = database.cursor.fetchall()
 
 
 Commit Data
