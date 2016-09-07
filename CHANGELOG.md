@@ -49,3 +49,4 @@
 * Support for all available connection parameters in mysql.connector
 * Added example for execution of custom queries
 * Added Link for available connection parameters
+* Flake8 improvements (PEP8)
