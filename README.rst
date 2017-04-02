@@ -1,7 +1,7 @@
 dbConnect: Database for Humans
 ==============================
 .. image:: https://readthedocs.org/projects/dbconnect/badge/?version=latest
-  :target: http://dbconnect.readthedocs.org/?badge=latest
+  :target: https://dbconnect.readthedocs.io/en/latest/?badge=latest
   :alt: Documentation Status
 .. image:: https://travis-ci.org/mastizada/dbConnect.svg?branch=master
   :target: https://travis-ci.org/mastizada/dbConnect
@@ -53,7 +53,6 @@ from source code:
 
 	$ git clone git@github.com:mastizada/dbConnect.git
 	$ cd dbConnect
-	$ # install required module for database
 	$ sudo python setup.py install
 
 Usage
