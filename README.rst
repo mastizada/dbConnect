@@ -1,5 +1,5 @@
 dbConnect: Database for Humans
-===========================
+==============================
 .. image:: https://readthedocs.org/projects/dbconnect/badge/?version=latest
   :target: http://dbconnect.readthedocs.org/?badge=latest
   :alt: Documentation Status
