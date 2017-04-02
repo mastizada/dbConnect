@@ -50,3 +50,9 @@
 * Added example for execution of custom queries
 * Added Link for available connection parameters
 * Flake8 improvements (PEP8)
+
+** v 2.0 **:
+
+* Added SUM function
+* Added support for Postgresql
+* Minor fixes

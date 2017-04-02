@@ -2,30 +2,27 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 import json
-try:
-    import mysql.connector  # MySQL Connector
-    from mysql.connector import errorcode
-except:
-    raise ValueError(
-        'Please, install mysql-connector module before using plugin.'
-    )
 
 
 class DBConnect:
-    """
-    Light database connection object
-    """
+    """Light database connection object."""
+    settings = {}
     def _check_settings(self):
         """
         Check configuration file
         :return: True if all settings are correct
         """
-        keys = ['host', 'user', 'password', 'database']
+        keys = ['host', 'user', 'password']
         if not all(key in self.settings.keys() for key in keys):
             raise ValueError(
                 'Please check credentials file for correct keys: host, user, '
                 'password, database'
             )
+        if self.engine == "mysql" and 'database' not in self.settings.keys():
+            raise ValueError(
+                'database parameter is missing in credentials'
+            )
+        # @NOTE PostgreSQL uses dbname and is automatically set to username
 
     def connect(self):
         """
@@ -33,21 +30,41 @@ class DBConnect:
         Connection to database can be loosed,
           if that happens you can use this function to reconnect to database
         """
-        try:
-            self.connection = mysql.connector.connect(**self.settings)
-        except mysql.connector.Error as err:
-            if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                raise ValueError("Wrong credentials, ACCESS DENIED")
-            elif err.errno == errorcode.ER_BAD_DB_ERROR:
+        if self.engine == "mysql":
+            try:
+                import mysql.connector  # MySQL Connector
+                from mysql.connector import errorcode
+                self.connection = mysql.connector.connect(**self.settings)
+            except ImportError:
                 raise ValueError(
-                    "Database %s does not exists" % (self.settings['database'])
+                    'Please, install mysql-connector module before using plugin.'
                 )
-            else:
-                raise ValueError(err)
+            except mysql.connector.Error as err:
+                if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+                    raise ValueError("Wrong credentials, ACCESS DENIED")
+                elif err.errno == errorcode.ER_BAD_DB_ERROR:
+                    raise ValueError(
+                        "Database %s does not exists" % (self.settings['database'])
+                    )
+                else:
+                    raise ValueError(err)
+        elif self.engine == "postgres":
+            try:
+                import psycopg2
+            except ImportError:
+                raise ValueError(
+                    'Please, install psycopg2 module before using plugin.'
+                )
+            self.connection = psycopg2.connect(**self.settings)
+        else:
+            raise NotImplementedError(
+                "Database engine %s not implemented!" % self.engine
+            )
+
         self.cursor = self.connection.cursor()
 
     def __init__(self, credentials_file=None, charset='utf8',
-                 port=3306, **kwargs):
+                 port=3306, engine="mysql", **kwargs):
         """
         Initialise object with credentials file provided
         You can choose between providing file or connection details
@@ -63,6 +80,10 @@ class DBConnect:
                 self.settings['charset'] = charset
         # Merge with kwargs
         self.settings.update(**kwargs)
+        self.engine = self.settings.pop('engine', engine)
+        # @NOTE Charset parameter not supported in PostgreSQL
+        if self.engine == 'postgres':
+            self.settings.pop('charset', None)
         self._check_settings()
         self.connection = None
         self.cursor = None
@@ -197,14 +218,30 @@ class DBConnect:
             query = query_insert + query_value
             if update and bool(update):
                 # bool(dict) checks if dict is not empty
-                query += ' ON DUPLICATE KEY UPDATE '
-                for key in update:
-                    query += key + ' = '
-                    if isinstance(update[key], int):
-                        query += update[key] + ', '
-                    else:
-                        query += '"' + update[key] + '", '
-                query = query.rstrip(', ')
+                if self.engine == "mysql":
+                    query += ' ON DUPLICATE KEY UPDATE '
+                    for key in update:
+                        query += key + ' = '
+                        if isinstance(update[key], int):
+                            query += update[key] + ', '
+                        else:
+                            query += '"' + update[key] + '", '
+                    query = query.rstrip(', ')
+                elif self.engine == "postgres":
+                    query += ' ON CONFLICT ON CONSTRAINT '
+                    query += table + '_pkey'
+                    query += ' DO UPDATE SET '
+                    for key in update:
+                        query = key + ' = '
+                        if isinstance(update[key], int):
+                            query += update[key] + ', '
+                        else:
+                            query += '"' + update[key] + '", '
+                    query = query.rstrip(', ')
+                else:
+                    raise NotImplementedError(
+                        "Update on insert not implemented for choosen engine"
+                    )
             # Format, execute and send to database:
             self.cursor.execute(query, data)
             if commit:
@@ -283,22 +320,24 @@ class DBConnect:
         if commit:
             self.commit()
 
-    def increment(self, table, columns, steps=1, filters=None,
+    def increment(self, table, fields, steps=1, filters=None,
                   case="AND", commit=True):
         """
         Increment column in table
         :param table: str table name
-        :param columns: list column names to increment
+        :param fields: list column names to increment
         :param steps: int steps to increment, default is 1
         :param filters: dict filters for rows to use
         :param case: Search case, Should be 'AND' or 'OR'
         :param commit: Commit at the end or add to pool
         :note: If you use safe update mode, filters should be provided
         """
-        if not columns:
-            raise ValueError("You must provide which columns to update")
+        if not fields:
+            raise ValueError(
+                "You must provide which columns (fields) to update"
+            )
         query = "UPDATE %s SET " % str(table)
-        for column in columns:
+        for column in fields:
             query += "{column} = {column} + {steps}, ".format(
                     column=column, steps=steps)
         query = query.rstrip(', ')
@@ -316,6 +355,41 @@ class DBConnect:
         if commit:
             self.commit()
         return {'status': True, 'message': "Columns incremented"}
+
+    def value_sum(self, table, fields, filters=None, case='AND'):
+        """
+        Get total sum of a numeric column(s)
+        :param table: name of the table
+        :type table: str
+        :param fields: fields to get sum of
+        :type fields: list
+        :param filters: filters to get custom results (where)
+        :type filters: dict
+        :param case: [AND, OR] for filter type
+        :type case: str
+        :return: dict with column name and value as Decimal
+        """
+        query = 'SELECT '
+        for field in fields:
+            query += 'SUM(' + field + '), '
+        query = query.rstrip(', ') + ' FROM ' + str(table)
+        data = None
+        if filters:
+            data = {}
+            query += ' WHERE '
+            update_query, where_data = self._where_builder(filters, case)
+            query += update_query
+            for key in where_data:
+                data['where_' + key] = where_data[key]
+        if data:
+            self.cursor.execute(query, data)
+        else:
+            self.cursor.execute(query)
+        row = self.cursor.fetchone()
+        result = {}
+        for i in range(len(row)):
+            result[fields[i]] = row[i]
+        return result
 
     def commit(self):
         """

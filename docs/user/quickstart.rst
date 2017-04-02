@@ -28,11 +28,16 @@ Or provide database details:
 
 	>>> database = DBConnect(host='127.0.0.1', user='root', password='', database='test')
 
-You can provide any other parameters that are available in `mysql.connector <https://dev.mysql.com/doc/connector-python/en/connector-python-connectargs.html>`_
+You can provide any other parameters that are available in `mysql.connector <https://dev.mysql.com/doc/connector-python/en/connector-python-connectargs.html>`_ or `PostgreSQL Documentation <https://www.postgresql.org/docs/current/static/libpq-connect.html#LIBPQ-PARAMKEYWORDS>`_
 
 * After successfull connection there will be **database.connection** and
-**database.cursor** variables that can be used as in official MySQL
-documentation.
+**database.cursor** variables that can be used as in official MySQL or PostgreSQL documentation.
+
+
+Engines
+-------
+
+dbConnect supports `mysql` and `postgres` as `engine` options.
 
 
 Fetch Data
@@ -126,7 +131,7 @@ Increment provided columns.
 
 Fields:
 	- table: ``str`` : name of table, must be provided
-	- columns: ``array`` : column names to increment, must be provided
+	- fields: ``array`` : list of column names to increment, required
 	- steps: ``int`` : Steps to increment, must be provided
 	- filters: ``dict`` : filters to find row(s)
 	- case: ``str`` : search case for filter [AND, OR], default ``'AND'``
@@ -135,6 +140,22 @@ Fields:
 Example:
 
 	>>> database.increment('user', ['views'], steps=2, filters={'id': 1})
+
+
+	SUM
+	-----------------
+
+	Total sum of a numeric column(s).
+
+	Fields:
+		- table: ``str`` : name of table, must be provided
+		- fields: ``array`` : list of numeric column names, required
+		- filters: ``dict`` : filters to find row(s)
+		- case: ``str`` : search case for filter [AND, OR], default ``'AND'``
+
+	Example:
+
+		>>> database.value_sum('user', fields=['views'])
 
 
 Custom SQL Query

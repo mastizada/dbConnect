@@ -12,15 +12,11 @@ USERS = [
 
 class dbTest(TestCase):
     def setUp(self):
-        """
-        Prepare for Test
-        """
+        """Prepare for Test."""
         self.database = DBConnect('travis_credentials.json')
 
     def tearDown(self):
-        """
-        Finish Testing
-        """
+        """Finish Testing."""
         # Delete all created rows
         self.database.cursor.execute("truncate test")
         self.database.commit()
@@ -28,9 +24,7 @@ class dbTest(TestCase):
         self.database.disconnect()
 
     def test_insert(self):
-        """
-        Test inserting information into database
-        """
+        """Test inserting information into database."""
         new_user = {
             'name': 'Emin Mastizada',
             'email': 'emin@linux.com',
@@ -41,9 +35,7 @@ class dbTest(TestCase):
                 "Insert Failed with message %s" % result["message"])
 
     def test_commit(self):
-        """
-        Test committing all users at once
-        """
+        """Test committing all users at once."""
         for user in USERS:
             result = self.database.insert(user, 'test', commit=False)
             self.assertTrue(result["status"],
@@ -64,10 +56,24 @@ class dbTest(TestCase):
                         "Number of new users in table should be 3")
 
     def test_fetch(self):
-        """
-        Test fetching information from database
-        """
+        """Test fetching information from database."""
         pass
+
+    def test_sum(self):
+        """Test value_sum functionality."""
+        counter=1
+        for user in USERS[:3]:
+            user['views'] = counter
+            self.database.insert(user, 'test')
+            counter+=1
+        sum_result = self.database.value_sum(
+            'test',
+            fields=['views']
+        )
+        # views = 1 + 2 + 3 = 6
+        self.assertEqual(
+            sum_result['views'], 6, "Sum of 3 new users should be 6"
+        )
 
 
 if __name__ == '__main__':

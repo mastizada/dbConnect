@@ -1,4 +1,4 @@
-dbConnect: MySQL for Humans
+dbConnect: Database for Humans
 ===========================
 .. image:: https://readthedocs.org/projects/dbconnect/badge/?version=latest
   :target: http://dbconnect.readthedocs.org/?badge=latest
@@ -9,11 +9,22 @@ dbConnect: MySQL for Humans
    :target: https://landscape.io/github/mastizada/dbConnect/master
    :alt: Code Health
 
+
+WHY?
+====
+
+dbConnect was made as a little module to be used in small projects
+that need to do some interactions with MySQL or PostgreSQL databases.
+
+It's just a big time saver for developers specially for making data analyzing and data scraping
+and it helps to keep your code clean and readable by using python-like structure.
+
+
 Installation
 =============
 requirements:
 ^^^^^^^^^^^^^
-dbConnect uses mysql.connector module, install it using:
+dbConnect uses mysql.connector module for mysql, install it using:
 
 .. code-block:: bash
 
@@ -21,6 +32,12 @@ dbConnect uses mysql.connector module, install it using:
   $ apt-get install python-mysql.connector
 
 Or using offical site: `https://dev.mysql.com/downloads/connector/python/`
+
+For PostgreSQL install psycopg2 module:
+
+.. code-block:: bash
+
+  $ pip install psycopg2
 
 using pip:
 ^^^^^^^^^^
@@ -36,7 +53,7 @@ from source code:
 
 	$ git clone git@github.com:mastizada/dbConnect.git
 	$ cd dbConnect
-	$ sudo pip install -r requirements.txt --allow-external mysql-connector-python
+	$ # install required module for database
 	$ sudo python setup.py install
 
 Usage
@@ -53,7 +70,7 @@ Documentation
 =============
 
 - Docs: http://dbconnect.readthedocs.org/
-- Another Docs: https://pythonhosted.org/dbConnect/
+- Alternate Docs: https://pythonhosted.org/dbConnect/
 - Check generated documentation using:
 
 	.. code-block:: bash
@@ -64,9 +81,9 @@ Documentation
 
 	.. code-block:: bash
 
-		$ pydoc3 -p 1994
+		$ pydoc3 -p 8000
 
-	and open localhost:1994/ in browser
+	and open http://localhost:8000/ in browser
 
 Enjoy
 =====

@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-dbConnect: MySQL for Humans
+dbConnect: Database for Humans
 ======================================
 
 Release v\ |version|. (:ref:`Installation <install>`)
@@ -11,8 +11,8 @@ Release v\ |version|. (:ref:`Installation <install>`)
 .. image:: https://readthedocs.org/projects/dbconnect/badge/?version=latest
 
 dbConnect is an :ref:`MPLv2 Licensed<mpl2>` Module for **little projects**
-using *mysql* database. It generates mysql queries automatically,
-you just send data in pythonic style and it does the rest.
+using *mysql* or *postgresql* databases. It generates mysql and postgresql
+queries automatically, you just send data in pythonic style and it does the rest.
 
     >>> from dbConnect import DBConnect
     >>> database = DBConnect('credentials.json')
@@ -31,6 +31,8 @@ Feature Support
 - **insert** to table
 - **update** row
 - **delete** row
+- **increment** column in table
+- **sum** of a numeric column(s)
 - **custom sql query**
 
 

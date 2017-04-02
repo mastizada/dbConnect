@@ -9,11 +9,14 @@ This part of the documentation covers the installation of dbConnect.
 Requirements
 ------------
 
-dbConnect uses mysql.connector, install it using::
+dbConnect uses mysql.connector for mysql, install it using::
 
     $ apt-get install python3-mysql.connector
     $ apt-get install python-mysql.connector
 
+For PostgreSQL install psycopg2 module::
+
+    $ pip install psycopg2
 
 Distribute & Pip
 ----------------
