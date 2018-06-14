@@ -56,3 +56,9 @@
 * Added SUM function
 * Added support for Postgresql
 * Minor fixes
+
+** v 2.1 **:
+
+* Addded `mysqlclient` as supported libraries for mysql
+* Flake8 added for PEP8 syntax check
+* Changed Github repo to mirror and moved main repo to Gitlab

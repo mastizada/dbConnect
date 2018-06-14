@@ -5,11 +5,11 @@ with open('README.rst', 'r') as f:
 
 setup(
     name='dbConnect',
-    version='2.0',
+    version='2.1',
     description='Database for Humans',
     long_description=readme,
-    keywords='dbConnect, mysql, postgresql, postgres, simple, easy, light, module',
-    url='https://github.com/mastizada/dbConnect',
+    keywords='dbConnect, mysql, postgresql, postgres, simple, easy, light, module, mysqlclient',
+    url='https://gitlab.com/mastizada/dbConnect',
     author='Emin Mastizada',
     author_email='emin@linux.com',
     license='MPLv2',

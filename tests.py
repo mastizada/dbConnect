@@ -10,7 +10,8 @@ USERS = [
     {'name': 'Kenneth Reitz', 'email': 'requests@test.local'},
 ]
 
-class dbTest(TestCase):
+
+class DBTest(TestCase):
     def setUp(self):
         """Prepare for Test."""
         self.database = DBConnect('travis_credentials.json')
@@ -31,15 +32,13 @@ class dbTest(TestCase):
             'views': 6,
         }
         result = self.database.insert(new_user, 'test')
-        self.assertTrue(result["status"],
-                "Insert Failed with message %s" % result["message"])
+        self.assertTrue(result["status"], "Insert Failed with message %s" % result["message"])
 
     def test_commit(self):
         """Test committing all users at once."""
         for user in USERS:
             result = self.database.insert(user, 'test', commit=False)
-            self.assertTrue(result["status"],
-                    "Insert Failed with message %s" % result["message"])
+            self.assertTrue(result["status"], "Insert Failed with message %s" % result["message"])
         self.database.commit()
         # Now there should be 3 users in table with views=0
         result = self.database.fetch(
@@ -49,11 +48,9 @@ class dbTest(TestCase):
                 )
         self.assertTrue(len(result), "Fetch returned empty results")
         if len(result):
-            self.assertTrue('count(id)' in result[0].keys(),
-                    "Requested field 'count(id)' missing in result keys")
+            self.assertTrue('count(id)' in result[0].keys(), "Requested field 'count(id)' missing in result keys")
             if 'count(id)' in result[0].keys():
-                self.assertEqual(result[0]['count(id)'], 3,
-                        "Number of new users in table should be 3")
+                self.assertEqual(result[0]['count(id)'], 3, "Number of new users in table should be 3")
 
     def test_fetch(self):
         """Test fetching information from database."""
@@ -61,11 +58,11 @@ class dbTest(TestCase):
 
     def test_sum(self):
         """Test value_sum functionality."""
-        counter=1
+        counter = 1
         for user in USERS[:3]:
             user['views'] = counter
             self.database.insert(user, 'test')
-            counter+=1
+            counter += 1
         sum_result = self.database.value_sum(
             'test',
             fields=['views']
