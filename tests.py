@@ -3,6 +3,7 @@
 
 from unittest import TestCase, main
 from dbConnect import DBConnect
+import os
 
 USERS = [
     {'name': 'Linus Torvals', 'email': 'linux@test.local'},
@@ -14,7 +15,13 @@ USERS = [
 class DBTest(TestCase):
     def setUp(self):
         """Prepare for Test."""
-        self.database = DBConnect('travis_credentials.json')
+        environment = os.environ.get('CI_ENV', "local")
+        if environment == "local":
+            self.database = DBConnect('test/test_credentials.json')
+        elif environment == "Gitlab":
+            self.database = DBConnect('test/gitlab_credentials.json')
+        elif environment == "Travis":
+            self.database = DBConnect('test/travis_credentials.json')
 
     def tearDown(self):
         """Finish Testing."""
