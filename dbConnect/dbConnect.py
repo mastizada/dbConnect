@@ -7,6 +7,7 @@ import json
 class DBConnect:
     """Light database connection object."""
     settings = {}
+
     def _check_settings(self):
         """
         Check configuration file
@@ -31,23 +32,37 @@ class DBConnect:
           if that happens you can use this function to reconnect to database
         """
         if self.engine == "mysql":
+            found_connector = False
             try:
-                import mysql.connector  # MySQL Connector
+                # Import official mysql connector if exists
+                import mysql.connector as mysql_module
                 from mysql.connector import errorcode
-                self.connection = mysql.connector.connect(**self.settings)
+                found_connector = True
             except ImportError:
-                raise ValueError(
-                    'Please, install mysql-connector module before using plugin.'
-                )
-            except mysql.connector.Error as err:
-                if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                    raise ValueError("Wrong credentials, ACCESS DENIED")
-                elif err.errno == errorcode.ER_BAD_DB_ERROR:
+                pass
+            if not found_connector:
+                # Check MySQLdb as secondary option
+                try:
+                    import MySQLdb as mysql_module
+                except ImportError:
                     raise ValueError(
-                        "Database %s does not exists" % (self.settings['database'])
+                        'Please, install mysql-connector or mysqlclient module before using this library.'
                     )
-                else:
-                    raise ValueError(err)
+            # Connect to db
+            try:
+                self.connection = mysql_module.connect(**self.settings)
+            except mysql_module.Error as err:
+                if found_connector:
+                    if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
+                        raise ValueError("Wrong credentials, ACCESS DENIED")
+                    elif err.errno == errorcode.ER_BAD_DB_ERROR:
+                        raise ValueError(
+                            "Database %s does not exists" % (self.settings['database'])
+                        )
+                    else:
+                        raise ValueError(err)
+                # @TODO Add detailed errors for MySQLdb
+                raise err
         elif self.engine == "postgres":
             try:
                 import psycopg2
@@ -396,6 +411,7 @@ class DBConnect:
         Commit collected data for making changes to database
         """
         self.connection.commit()
+
 
 if __name__ == '__main__':
     pass

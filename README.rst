@@ -24,7 +24,7 @@ Installation
 =============
 requirements:
 ^^^^^^^^^^^^^
-dbConnect uses mysql.connector module for mysql, install it using:
+dbConnect uses `mysql.connector` and `mysqlclient` modules for mysql, install **one** of them using:
 
 .. code-block:: bash
 
@@ -32,6 +32,12 @@ dbConnect uses mysql.connector module for mysql, install it using:
   $ apt-get install python-mysql.connector
 
 Or using offical site: `https://dev.mysql.com/downloads/connector/python/`
+
+.. code-block:: bash
+
+  $ pip install mysqlclient
+
+More details on `mysqlclient`: `https://github.com/PyMySQL/mysqlclient-python`
 
 For PostgreSQL install psycopg2 module:
 
@@ -51,7 +57,7 @@ from source code:
 
 .. code-block:: bash
 
-	$ git clone git@github.com:mastizada/dbConnect.git
+	$ git clone git@gitlab.com:mastizada/dbConnect.git
 	$ cd dbConnect
 	$ sudo python setup.py install
 

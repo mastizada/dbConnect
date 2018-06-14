@@ -5,11 +5,11 @@ with open('README.rst', 'r') as f:
 
 setup(
     name='dbConnect',
-    version='2.0',
+    version='2.1',
     description='Database for Humans',
     long_description=readme,
-    keywords='dbConnect, mysql, postgresql, postgres, simple, easy, light, module',
-    url='https://github.com/mastizada/dbConnect',
+    keywords='dbConnect, mysql, postgresql, postgres, simple, easy, light, module, mysqlclient',
+    url='https://gitlab.com/mastizada/dbConnect',
     author='Emin Mastizada',
     author_email='emin@linux.com',
     license='MPLv2',
@@ -22,7 +22,6 @@ setup(
         'License :: OSI Approved :: Mozilla Public License 2.0 (MPL 2.0)',
         'Operating System :: OS Independent',
         'Intended Audience :: Developers',
-        'Natural Language :: English',
         'Programming Language :: Python',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
@@ -37,5 +36,10 @@ setup(
         'Environment :: Plugins',
     ],
     scripts=['dbConnect/dbConnect.py'],
+    project_urls={
+        "Bug Reports": "https://gitlab.com/mastizada/dbConnect/issues",
+        "Source": "https://gitlab.com/mastizada/dbConnect",
+        "Say Thanks!": "https://saythanks.io/to/mastizada"
+    },
     zip_safe=False
 )

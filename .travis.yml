@@ -4,18 +4,19 @@ language: python
 addons:
   apt:
     packages:
-      - python-mysql.connector
       - mysql-server-5.6
       - mysql-client-core-5.6
       - mysql-client-5.6
 python:
   - "2.7"
+  - "3.6"
 services:
   - mysql
 install:
   - pip install -r requirements.txt
+  - pip install mysqlclient
 before_script:
-  - "./travis-ci-setup -h127.0.0.1 -uroot"
+  - "./test/mysql-ci-setup -h127.0.0.1 -uroot"
 virtualenv:
   system_site_packages: true
 script: python tests.py
